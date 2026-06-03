@@ -13,5 +13,5 @@ pip install --upgrade pip
 pip install -r requirements.txt
 
 # 4. Execute
-python3 src/main.py
+python3 src/batch_upload.py
 ```

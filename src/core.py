@@ -6,8 +6,15 @@ import os
 MASTER_FOLDER_ID = '0AJ2Har0iz1dkUk9PVA'
 
 def authenticate():
-    gauth = GoogleAuth()
+    src_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    root_dir = os.path.dirname(src_dir)
+    
+    settings_path = os.path.join(root_dir, "config", "settings.yaml")
+    
+    gauth = GoogleAuth(settings_file=settings_path)
     gauth.ServiceAuth()
+    
     return GoogleDrive(gauth)
 
 def upload_slide(filepath, upload_name):
@@ -17,10 +24,17 @@ def upload_slide(filepath, upload_name):
     print(f"Connecting to FIBI Server... preparing to upload {filename}")
     
     # Create the file metadata
-    file_metadata = {
-        'title': f"{upload_name}_{filename}",
-        'parents': [{'id': MASTER_FOLDER_ID}]
-    }
+    if upload_name:
+        file_metadata = {
+            'title': f"{upload_name}_{filename}",
+            'parents': [{'id': MASTER_FOLDER_ID}]
+        }
+    else:
+        file_metadata = {
+            'title': f"{filename}",
+            'parents': [{'id': MASTER_FOLDER_ID}]
+        }
+
     
     file = drive.CreateFile(file_metadata)
     file.SetContentFile(filepath)
